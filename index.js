@@ -25,8 +25,8 @@ const Ook = props => {
     )
   }
 
-  const breakpoints = OokContext.Consumer._currentValue.breakpoints || {}
-  const defaults = OokContext.Consumer._currentValue.defaults || {}
+  const breakpoints = OokContext?.Consumer?._currentValue?.breakpoints || {}
+  const defaults = OokContext?.Consumer?._currentValue?.defaults || {}
 
   const sortedBpNamesBySize = Object.keys(breakpoints).sort(
     (a, b) => parseInt(breakpoints[a]) - parseInt(breakpoints[b]),
@@ -37,19 +37,20 @@ const Ook = props => {
   // Create default rules object to be used as the initial accumulator for cssProps (so we can overwrite it)
   const defaultRules = Object.entries(defaults).reduce(
     (acc, [cssProperty, bpVals]) => {
+      acc[cssProperty] = bpVals
+
       Object.entries(bpVals).forEach(([bp, val]) => {
-        if (bp === sortedBpNamesBySize[0]) {
-          acc[cssProperty] = val
-        } else {
-          acc[`@media (min-width: ${breakpoints[bp]})`] = {
-            [cssProperty]: val,
+          if (bp === sortedBpNamesBySize[0]) {
+            acc[cssProperty] = val
+          } else {
+            acc[`@media (min-width: ${breakpoints[bp]})`] = {
+              [cssProperty]: val,
+            }
           }
-        }
       })
 
       return acc
-    },
-    {},
+    }, {}
   )
 
   const cssProps = Object.entries(props).reduce((acc, [key, val]) => {

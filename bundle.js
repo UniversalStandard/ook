@@ -6141,6 +6141,8 @@ var OokContext = react.createContext();
 OokContext.displayName = 'OokGlobalConfig';
 
 var Ook = function Ook(props) {
+  var _OokContext$Consumer, _OokContext$Consumer$, _OokContext$Consumer2, _OokContext$Consumer3;
+
   var inline = props.inline,
       base = props.base,
       globalConfig = props.globalConfig,
@@ -6154,8 +6156,8 @@ var Ook = function Ook(props) {
     }));
   }
 
-  var breakpoints = OokContext.Consumer._currentValue.breakpoints || {};
-  var defaults = OokContext.Consumer._currentValue.defaults || {};
+  var breakpoints = (OokContext === null || OokContext === void 0 ? void 0 : (_OokContext$Consumer = OokContext.Consumer) === null || _OokContext$Consumer === void 0 ? void 0 : (_OokContext$Consumer$ = _OokContext$Consumer._currentValue) === null || _OokContext$Consumer$ === void 0 ? void 0 : _OokContext$Consumer$.breakpoints) || {};
+  var defaults = (OokContext === null || OokContext === void 0 ? void 0 : (_OokContext$Consumer2 = OokContext.Consumer) === null || _OokContext$Consumer2 === void 0 ? void 0 : (_OokContext$Consumer3 = _OokContext$Consumer2._currentValue) === null || _OokContext$Consumer3 === void 0 ? void 0 : _OokContext$Consumer3.defaults) || {};
   var sortedBpNamesBySize = Object.keys(breakpoints).sort(function (a, b) {
     return parseInt(breakpoints[a]) - parseInt(breakpoints[b]);
   });
@@ -6166,6 +6168,7 @@ var Ook = function Ook(props) {
         cssProperty = _ref2[0],
         bpVals = _ref2[1];
 
+    acc[cssProperty] = bpVals;
     Object.entries(bpVals).forEach(function (_ref3) {
       var _ref4 = _slicedToArray(_ref3, 2),
           bp = _ref4[0],
