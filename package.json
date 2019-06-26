@@ -1,13 +1,30 @@
 {
   "name": "@universalstandard/ook",
   "version": "1.0.0",
+  "main": "bundle.js",
+  "husky": {
+    "hooks": {
+      "pre-push": "run-s build test"
+    }
+  },
   "scripts": {
-    "blast-dist": "rm -rf dist; mkdir dist",
-    "build": "run-s blast-dist build-babel",
-    "build-babel": "babel src -d dist",
-    "watch-babel": "babel -w src -d dist",
-    "serve-example-cra": "cd example; yarn start",
-    "dev": "run-p watch-babel serve-example-cra"
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "test": "run-s build jest",
+    "jest": "jest",
+    "example": "cd example; yarn start",
+    "dev": "run-p watch example"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "modules": false
+        }
+      ],
+      "@babel/preset-react"
+    ]
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^0.8.2",
@@ -17,18 +34,17 @@
     "react": "^16.8.6"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "npm-run-all": "^4.1.5"
+    "husky": "^2.4.1",
+    "jest": "^24.8.0",
+    "npm-run-all": "^4.1.5",
+    "rollup": "^1.16.2",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.1.0"
   },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
-  },
-  "main": "dist/index.js",
   "license": "MIT"
 }

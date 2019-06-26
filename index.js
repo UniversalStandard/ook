@@ -1,9 +1,9 @@
-/* eslint no-use-before-define: ["error", { "functions": false }] */
-import React, { createContext } from 'react'
+import React from 'react'
 import knownCssProperties from 'known-css-properties'
-import { kebabCase, startCase } from 'lodash'
 import isPropValid from '@emotion/is-prop-valid'
 import { css } from 'glamor'
+const kebabCase = require('lodash/kebabCase')
+const startCase = require('lodash/startCase')
 
 // Ook! Ook! 🍌
 
@@ -53,7 +53,6 @@ const Ook = props => {
   )
 
   const cssProps = Object.entries(props).reduce((acc, [key, val]) => {
-    // Begin work on overwriting objects and single-value rules
     let prefixed = false
     if (key.match(/^_/)) {
       prefixed = true
@@ -63,7 +62,7 @@ const Ook = props => {
 
     if (knownCssProperties.all.includes(kebabCased)) {
       if (typeof val === 'object') {
-        // Overwrite default rules
+        // Overwrite global breakpoint rules
         Object.entries(val).forEach(([bp, v]) => {
           if (bp === sortedBpNamesBySize[0]) {
             acc[prefixed ? startCased : key] = v
