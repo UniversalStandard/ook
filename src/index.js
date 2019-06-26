@@ -1,5 +1,5 @@
 /* eslint no-use-before-define: ["error", { "functions": false }] */
-import React from 'react'
+import React, { createContext } from 'react'
 import knownCssProperties from 'known-css-properties'
 import { kebabCase, startCase } from 'lodash'
 import isPropValid from '@emotion/is-prop-valid'
@@ -7,55 +7,30 @@ import { css } from 'glamor'
 
 // Ook! Ook! 🍌
 
-const breakpoints = {
-  d: '0px',
-  xs: '320px',
-  s: '640px',
-  m: '768px',
-  l: '960px',
-  xl: '1280px',
-  xxl: '1920px',
-  xxxl: '2400px',
-}
-
-const defaults = {
-  fontFamily: {
-    d: 'sans-serif'
-  },
-  fontSize: generateScale(11, 13),
-}
-
-function generateScale(minPx, maxPx) {
-  if (typeof minPx !== 'number' || typeof maxPx !== 'number') {
-    throw new Error('minPx and maxPx in generateScale() must be numbers')
-  }
-
-  const fontScale = stepScale(minPx, maxPx, Object.keys(breakpoints).length)
-  return Object.keys(breakpoints).reduce((acc, bp, i) => {
-    acc[bp] = `${fontScale[i] * 0.1}em`
-    return acc
-  }, {})
-}
-
-// Finds the step increment between two numbers and returns an array using that increment for the number of steps.
-// e.g. stepScale(5, 10, 4) // [5, 6.6667 8.3334, 10 ]
-function stepScale(min, max, numberOfSteps) {
-  const _numberOfSteps = numberOfSteps - 1
-  const scaleBy = (max - min) / _numberOfSteps
-
-  const arr = []
-  for (let i = 0; i <= _numberOfSteps; i += 1) {
-    arr.push(min + scaleBy * i)
-  }
-  return arr
-}
-
-const sortedBpNamesBySize = Object.keys(breakpoints).sort(
-  (a, b) => parseInt(breakpoints[a]) - parseInt(breakpoints[b]),
-)
+const OokContext = React.createContext()
+OokContext.displayName = 'OokGlobalConfig'
 
 const Ook = props => {
-  const { inline, base, children } = props
+  const { inline, base, globalConfig, children } = props
+
+  if (globalConfig) {
+    return (
+      <OokContext.Provider value={globalConfig}>
+        <OokContext.Consumer>
+          {(ctx) => {
+            return children
+          }}
+        </OokContext.Consumer>
+      </OokContext.Provider>
+    )
+  }
+
+  const breakpoints = OokContext.Consumer._currentValue.breakpoints || {}
+  const defaults = OokContext.Consumer._currentValue.defaults || {}
+
+  const sortedBpNamesBySize = Object.keys(breakpoints).sort(
+    (a, b) => parseInt(breakpoints[a]) - parseInt(breakpoints[b]),
+  )
 
   const modifiedProps = Object.assign({}, props)
 
@@ -87,10 +62,6 @@ const Ook = props => {
     const startCased = startCase(key).replace(/\s+/g, '')
 
     if (knownCssProperties.all.includes(kebabCased)) {
-      if (typeof val !== 'object') {
-        acc[prefixed ? startCased : key] = `${val} !important`
-      }
-
       if (typeof val === 'object') {
         // Overwrite default rules
         Object.entries(val).forEach(([bp, v]) => {
@@ -104,6 +75,10 @@ const Ook = props => {
           }
         })
       }
+
+      if (typeof val !== 'object') {
+        acc[prefixed ? startCased : key] = val
+      }
     }
 
     if (!isPropValid(key)) {
@@ -116,8 +91,6 @@ const Ook = props => {
   const rule = css(cssProps)
 
   if (base) {
-    console.log(children)
-
     const styledDiv = React.createElement(
       inline ? 'span' : 'div',
       {

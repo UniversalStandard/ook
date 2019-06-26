@@ -1,7 +1,6 @@
 {
-  "name": "ook",
+  "name": "@universalstandard/ook",
   "version": "1.0.0",
-  "main": "dist/index.js",
   "scripts": {
     "blast-dist": "rm -rf dist; mkdir dist",
     "build": "run-s blast-dist build-babel",
@@ -10,11 +9,12 @@
     "serve-example-cra": "cd example; yarn start",
     "dev": "run-p watch-babel serve-example-cra"
   },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
+  "dependencies": {
+    "@emotion/is-prop-valid": "^0.8.2",
+    "glamor": "^2.20.40",
+    "known-css-properties": "^0.14.0",
+    "lodash": "^4.17.11",
+    "react": "^16.8.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
@@ -23,12 +23,12 @@
     "@babel/preset-react": "^7.0.0",
     "npm-run-all": "^4.1.5"
   },
-  "license": "MIT",
-  "dependencies": {
-    "@emotion/is-prop-valid": "^0.8.2",
-    "glamor": "^2.20.40",
-    "known-css-properties": "^0.14.0",
-    "lodash": "^4.17.11",
-    "react": "^16.8.6"
-  }
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  },
+  "main": "dist/index.js",
+  "license": "MIT"
 }

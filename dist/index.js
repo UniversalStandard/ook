@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _knownCssProperties = _interopRequireDefault(require("known-css-properties"));
 
@@ -16,6 +16,8 @@ var _isPropValid = _interopRequireDefault(require("@emotion/is-prop-valid"));
 var _glamor = require("glamor");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj["default"] = obj; return newObj; } }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
@@ -32,58 +34,29 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 // Ook! Ook! 🍌
-var breakpoints = {
-  d: '0px',
-  xs: '320px',
-  s: '640px',
-  m: '768px',
-  l: '960px',
-  xl: '1280px',
-  xxl: '1920px',
-  xxxl: '2400px'
-};
-var defaults = {
-  fontFamily: {
-    d: 'sans-serif'
-  },
-  fontSize: generateScale(11, 13)
-};
+var OokContext = _react["default"].createContext();
 
-function generateScale(minPx, maxPx) {
-  if (typeof minPx !== 'number' || typeof maxPx !== 'number') {
-    throw new Error('minPx and maxPx in generateScale() must be numbers');
-  }
-
-  var fontScale = stepScale(minPx, maxPx, Object.keys(breakpoints).length);
-  return Object.keys(breakpoints).reduce(function (acc, bp, i) {
-    acc[bp] = "".concat(fontScale[i] * 0.1, "em");
-    return acc;
-  }, {});
-} // Finds the step increment between two numbers and returns an array using that increment for the number of steps.
-// e.g. stepScale(5, 10, 4) // [5, 6.6667 8.3334, 10 ]
-
-
-function stepScale(min, max, numberOfSteps) {
-  var _numberOfSteps = numberOfSteps - 1;
-
-  var scaleBy = (max - min) / _numberOfSteps;
-  var arr = [];
-
-  for (var i = 0; i <= _numberOfSteps; i += 1) {
-    arr.push(min + scaleBy * i);
-  }
-
-  return arr;
-}
-
-var sortedBpNamesBySize = Object.keys(breakpoints).sort(function (a, b) {
-  return parseInt(breakpoints[a]) - parseInt(breakpoints[b]);
-});
+OokContext.displayName = 'OokGlobalConfig';
 
 var Ook = function Ook(props) {
   var inline = props.inline,
       base = props.base,
+      globalConfig = props.globalConfig,
       children = props.children;
+
+  if (globalConfig) {
+    return _react["default"].createElement(OokContext.Provider, {
+      value: globalConfig
+    }, _react["default"].createElement(OokContext.Consumer, null, function (ctx) {
+      return children;
+    }));
+  }
+
+  var breakpoints = OokContext.Consumer._currentValue.breakpoints || {};
+  var defaults = OokContext.Consumer._currentValue.defaults || {};
+  var sortedBpNamesBySize = Object.keys(breakpoints).sort(function (a, b) {
+    return parseInt(breakpoints[a]) - parseInt(breakpoints[b]);
+  });
   var modifiedProps = Object.assign({}, props); // Create default rules object to be used as the initial accumulator for cssProps (so we can overwrite it)
 
   var defaultRules = Object.entries(defaults).reduce(function (acc, _ref) {
@@ -120,10 +93,6 @@ var Ook = function Ook(props) {
     var startCased = (0, _lodash.startCase)(key).replace(/\s+/g, '');
 
     if (_knownCssProperties["default"].all.includes(kebabCased)) {
-      if (_typeof(val) !== 'object') {
-        acc[prefixed ? startCased : key] = "".concat(val, " !important");
-      }
-
       if (_typeof(val) === 'object') {
         // Overwrite default rules
         Object.entries(val).forEach(function (_ref7) {
@@ -138,6 +107,10 @@ var Ook = function Ook(props) {
           }
         });
       }
+
+      if (_typeof(val) !== 'object') {
+        acc[prefixed ? startCased : key] = val;
+      }
     }
 
     if (!(0, _isPropValid["default"])(key)) {
@@ -149,8 +122,6 @@ var Ook = function Ook(props) {
   var rule = (0, _glamor.css)(cssProps);
 
   if (base) {
-    console.log(children);
-
     var styledDiv = _react["default"].createElement(inline ? 'span' : 'div', _objectSpread({
       style: {
         fontSize: base,
