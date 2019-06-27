@@ -67,6 +67,23 @@ Ooks are `<div>`s by default. `<Ook inline>...</Ook>` will return a `<span>`.
 
 Wraps the element in a `<span>` or `<div>` (depending on `inline`) with `style={{ fontSize: base }}`. This is useful when you simply want to scale a component up by sizing everything inside it with `em`s.
 
+### active, hover, focus, visited (object)
+
+Allows you to do things like:
+
+```js
+<Ook
+  background="red"
+  color="white"
+  hover={{
+    background: 'blue',
+    color: {
+      tablet: 'yellow'
+    }
+  }}
+>
+```
+
 ---
 
 That's it. That's the API. 🍌

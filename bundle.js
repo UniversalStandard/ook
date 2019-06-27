@@ -6139,6 +6139,7 @@ var startCase = require('lodash/startCase'); // Ook! Ook! 🍌
 
 var OokContext = react.createContext();
 OokContext.displayName = 'OokGlobalConfig';
+var states = ['active', 'hover', 'focus', 'visited'];
 
 var Ook = function Ook(props) {
   var _OokContext$Consumer, _OokContext$Consumer$, _OokContext$Consumer2, _OokContext$Consumer3;
@@ -6194,15 +6195,50 @@ var Ook = function Ook(props) {
     }
 
     var kebabCased = prefixed ? "-".concat(kebabCase(key)) : kebabCase(key);
-    var startCased = startCase(key).replace(/\s+/g, '');
+    var startCased = startCase(key).replace(/\s+/g, ''); // States
+
+    if (states.includes(key)) {
+      Object.entries(val).forEach(function (_ref7) {
+        var _ref8 = _slicedToArray(_ref7, 2),
+            cssProp = _ref8[0],
+            _v = _ref8[1];
+
+        var kebabCased = prefixed ? "-".concat(kebabCase(cssProp)) : kebabCase(cssProp);
+
+        if (knownCssProperties.all.includes(kebabCased)) {
+          if (_typeof(_v) === 'object') {
+            // TODO: A bunch of this is duplicated below. Should probably be combined into a function.
+            // Will likely be tripling it when pseudo elements are added.
+            if (_typeof(_v) === 'object') {
+              Object.entries(_v).forEach(function (_ref9) {
+                var _ref10 = _slicedToArray(_ref9, 2),
+                    bp = _ref10[0],
+                    v = _ref10[1];
+
+                if (bp === sortedBpNamesBySize[0]) {
+                  acc[":".concat(key)] = _objectSpread({}, acc[":".concat(key)], _defineProperty({}, cssProp, v));
+                } else {
+                  acc["@media (min-width: ".concat(breakpoints[bp], ")")] = _objectSpread({}, acc["@media (min-width: ".concat(breakpoints[bp], ")")], _defineProperty({}, ":".concat(key), _objectSpread({}, [":".concat(key)], _defineProperty({}, cssProp, v))));
+                }
+              });
+            }
+          }
+
+          if (typeof _v === 'string') {
+            acc[":".concat(key)] = _objectSpread({}, acc[":".concat(key)], _defineProperty({}, cssProp, _v));
+          }
+        }
+      });
+    } // Generic css and media queries
+
 
     if (knownCssProperties.all.includes(kebabCased)) {
       if (_typeof(val) === 'object') {
         // Overwrite global breakpoint rules
-        Object.entries(val).forEach(function (_ref7) {
-          var _ref8 = _slicedToArray(_ref7, 2),
-              bp = _ref8[0],
-              v = _ref8[1];
+        Object.entries(val).forEach(function (_ref11) {
+          var _ref12 = _slicedToArray(_ref11, 2),
+              bp = _ref12[0],
+              v = _ref12[1];
 
           if (bp === sortedBpNamesBySize[0]) {
             acc[prefixed ? startCased : key] = v;
@@ -6212,10 +6248,11 @@ var Ook = function Ook(props) {
         });
       }
 
-      if (_typeof(val) !== 'object') {
+      if (typeof val === 'string') {
         acc[prefixed ? startCased : key] = val;
       }
-    }
+    } // Some of these props (e.g. backgroundColor) cause React to throw a warning. This removes them from the ook.
+
 
     if (!index(key)) {
       delete modifiedProps[key];

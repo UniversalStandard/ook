@@ -10,6 +10,8 @@ const startCase = require('lodash/startCase')
 const OokContext = React.createContext()
 OokContext.displayName = 'OokGlobalConfig'
 
+const states = ['active', 'hover', 'focus', 'visited']
+
 const Ook = props => {
   const { inline, base, globalConfig, children } = props
 
@@ -25,8 +27,8 @@ const Ook = props => {
     )
   }
 
-  const breakpoints = OokContext?.Consumer?._currentValue?.breakpoints || {}
-  const defaults = OokContext?.Consumer?._currentValue?.defaults || {}
+  const breakpoints = OokContext ?.Consumer ?._currentValue ?.breakpoints || {}
+  const defaults = OokContext ?.Consumer ?._currentValue ?.defaults || {}
 
   const sortedBpNamesBySize = Object.keys(breakpoints).sort(
     (a, b) => parseInt(breakpoints[a]) - parseInt(breakpoints[b]),
@@ -40,13 +42,13 @@ const Ook = props => {
       acc[cssProperty] = bpVals
 
       Object.entries(bpVals).forEach(([bp, val]) => {
-          if (bp === sortedBpNamesBySize[0]) {
-            acc[cssProperty] = val
-          } else {
-            acc[`@media (min-width: ${breakpoints[bp]})`] = {
-              [cssProperty]: val,
-            }
+        if (bp === sortedBpNamesBySize[0]) {
+          acc[cssProperty] = val
+        } else {
+          acc[`@media (min-width: ${breakpoints[bp]})`] = {
+            [cssProperty]: val,
           }
+        }
       })
 
       return acc
@@ -61,6 +63,45 @@ const Ook = props => {
     const kebabCased = prefixed ? `-${kebabCase(key)}` : kebabCase(key)
     const startCased = startCase(key).replace(/\s+/g, '')
 
+    // States
+    if (states.includes(key)) {
+      Object.entries(val).forEach(([cssProp, _v]) => {
+        const kebabCased = prefixed ? `-${kebabCase(cssProp)}` : kebabCase(cssProp)
+        if (knownCssProperties.all.includes(kebabCased)) {
+          if (typeof _v === 'object') {
+            // TODO: A bunch of this is duplicated below. Should probably be combined into a function.
+            // Will likely be tripling it when pseudo elements are added.
+            if (typeof _v === 'object') {
+              Object.entries(_v).forEach(([bp, v]) => {
+                if (bp === sortedBpNamesBySize[0]) {
+                  acc[`:${key}`] = {
+                    ...acc[`:${key}`],
+                    [cssProp]: v
+                  }
+                } else {
+                  acc[`@media (min-width: ${breakpoints[bp]})`] = {
+                    ...acc[`@media (min-width: ${breakpoints[bp]})`],
+                    [`:${key}`]: {
+                      ...[`:${key}`],
+                      [cssProp]: v
+                    }
+                  }
+                }
+              })
+            }
+          }
+
+          if (typeof _v === 'string') {
+            acc[`:${key}`] = {
+              ...acc[`:${key}`],
+              [cssProp]: _v
+            }
+          }
+        }
+      })
+    }
+
+    // Generic css and media queries
     if (knownCssProperties.all.includes(kebabCased)) {
       if (typeof val === 'object') {
         // Overwrite global breakpoint rules
@@ -76,11 +117,12 @@ const Ook = props => {
         })
       }
 
-      if (typeof val !== 'object') {
+      if (typeof val === 'string') {
         acc[prefixed ? startCased : key] = val
       }
     }
 
+    // Some of these props (e.g. backgroundColor) cause React to throw a warning. This removes them from the ook.
     if (!isPropValid(key)) {
       delete modifiedProps[key]
     }
