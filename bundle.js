@@ -6169,18 +6169,24 @@ var Ook = function Ook(props) {
         cssProperty = _ref2[0],
         bpVals = _ref2[1];
 
-    acc[cssProperty] = bpVals;
-    Object.entries(bpVals).forEach(function (_ref3) {
-      var _ref4 = _slicedToArray(_ref3, 2),
-          bp = _ref4[0],
-          val = _ref4[1];
+    if (_typeof(bpVals) === 'object') {
+      Object.entries(bpVals).forEach(function (_ref3) {
+        var _ref4 = _slicedToArray(_ref3, 2),
+            bp = _ref4[0],
+            val = _ref4[1];
 
-      if (bp === sortedBpNamesBySize[0]) {
-        acc[cssProperty] = val;
-      } else {
-        acc["@media (min-width: ".concat(breakpoints[bp], ")")] = _defineProperty({}, cssProperty, val);
-      }
-    });
+        if (bp === sortedBpNamesBySize[0]) {
+          acc[cssProperty] = val;
+        } else {
+          acc["@media (min-width: ".concat(breakpoints[bp], ")")] = _defineProperty({}, cssProperty, val);
+        }
+      });
+    }
+
+    if (typeof bpVals === 'string') {
+      acc[cssProperty] = bpVals;
+    }
+
     return acc;
   }, {});
   var cssProps = Object.entries(props).reduce(function (acc, _ref5) {
@@ -6198,6 +6204,8 @@ var Ook = function Ook(props) {
     var startCased = startCase(key).replace(/\s+/g, ''); // States
 
     if (states.includes(key)) {
+      var _key = ":".concat(key);
+
       Object.entries(val).forEach(function (_ref7) {
         var _ref8 = _slicedToArray(_ref7, 2),
             cssProp = _ref8[0],
@@ -6216,16 +6224,16 @@ var Ook = function Ook(props) {
                     v = _ref10[1];
 
                 if (bp === sortedBpNamesBySize[0]) {
-                  acc[":".concat(key)] = _objectSpread({}, acc[":".concat(key)], _defineProperty({}, cssProp, v));
+                  acc[_key] = _objectSpread({}, acc[_key], _defineProperty({}, cssProp, v));
                 } else {
-                  acc["@media (min-width: ".concat(breakpoints[bp], ")")] = _objectSpread({}, acc["@media (min-width: ".concat(breakpoints[bp], ")")], _defineProperty({}, ":".concat(key), _objectSpread({}, [":".concat(key)], _defineProperty({}, cssProp, v))));
+                  acc["@media (min-width: ".concat(breakpoints[bp], ")")] = _objectSpread({}, acc["@media (min-width: ".concat(breakpoints[bp], ")")], _defineProperty({}, _key, _objectSpread({}, [_key], _defineProperty({}, cssProp, v))));
                 }
               });
             }
           }
 
           if (typeof _v === 'string') {
-            acc[":".concat(key)] = _objectSpread({}, acc[":".concat(key)], _defineProperty({}, cssProp, _v));
+            acc[_key] = _objectSpread({}, acc[_key], _defineProperty({}, cssProp, _v));
           }
         }
       });
