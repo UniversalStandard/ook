@@ -65,6 +65,8 @@ const Ook = props => {
 
     // States
     if (states.includes(key)) {
+      const _key = `:${key}`
+
       Object.entries(val).forEach(([cssProp, _v]) => {
         const kebabCased = prefixed ? `-${kebabCase(cssProp)}` : kebabCase(cssProp)
         if (knownCssProperties.all.includes(kebabCased)) {
@@ -74,15 +76,15 @@ const Ook = props => {
             if (typeof _v === 'object') {
               Object.entries(_v).forEach(([bp, v]) => {
                 if (bp === sortedBpNamesBySize[0]) {
-                  acc[`:${key}`] = {
-                    ...acc[`:${key}`],
+                  acc[_key] = {
+                    ...acc[_key],
                     [cssProp]: v
                   }
                 } else {
                   acc[`@media (min-width: ${breakpoints[bp]})`] = {
                     ...acc[`@media (min-width: ${breakpoints[bp]})`],
-                    [`:${key}`]: {
-                      ...[`:${key}`],
+                    [_key]: {
+                      ...[_key],
                       [cssProp]: v
                     }
                   }
@@ -92,8 +94,8 @@ const Ook = props => {
           }
 
           if (typeof _v === 'string') {
-            acc[`:${key}`] = {
-              ...acc[`:${key}`],
+            acc[_key] = {
+              ...acc[_key],
               [cssProp]: _v
             }
           }
