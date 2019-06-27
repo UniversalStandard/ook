@@ -19,7 +19,7 @@ const Ook = props => {
     return (
       <OokContext.Provider value={globalConfig}>
         <OokContext.Consumer>
-          {(ctx) => {
+          {ctx => {
             return children
           }}
         </OokContext.Consumer>
@@ -40,7 +40,6 @@ const Ook = props => {
   const defaultRules = Object.entries(defaults).reduce(
     (acc, [cssProperty, bpVals]) => {
       if (typeof bpVals === 'object') {
-
         Object.entries(bpVals).forEach(([bp, val]) => {
           if (bp === sortedBpNamesBySize[0]) {
             acc[cssProperty] = val
@@ -57,7 +56,8 @@ const Ook = props => {
       }
 
       return acc
-    }, {}
+    },
+    {},
   )
 
   const cssProps = Object.entries(props).reduce((acc, [key, val]) => {
@@ -74,24 +74,27 @@ const Ook = props => {
 
       Object.entries(val).forEach(([cssProp, _v]) => {
         const kebabCased = prefixed ? `-${kebabCase(cssProp)}` : kebabCase(cssProp)
+
+        const kebabCased = prefixed
+          ? `-${kebabCase(cssProp)}`
+          : kebabCase(cssProp)
+
         if (knownCssProperties.all.includes(kebabCased)) {
           if (typeof _v === 'object') {
             // TODO: A bunch of this is duplicated below. Should probably be combined into a function.
-            // Will likely be tripling it when pseudo elements are added.
             if (typeof _v === 'object') {
               Object.entries(_v).forEach(([bp, v]) => {
                 if (bp === sortedBpNamesBySize[0]) {
                   acc[_key] = {
                     ...acc[_key],
-                    [cssProp]: v
+                    [cssProp]: v,
                   }
                 } else {
                   acc[`@media (min-width: ${breakpoints[bp]})`] = {
                     ...acc[`@media (min-width: ${breakpoints[bp]})`],
                     [_key]: {
-                      ...[_key],
-                      [cssProp]: v
-                    }
+                      [cssProp]: v,
+                    },
                   }
                 }
               })
@@ -101,7 +104,7 @@ const Ook = props => {
           if (typeof _v === 'string') {
             acc[_key] = {
               ...acc[_key],
-              [cssProp]: _v
+              [cssProp]: _v,
             }
           }
         }
