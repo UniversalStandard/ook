@@ -1,6 +1,6 @@
 # @universalstandard/ook
 
-`<Ook>` is like [styled-system](https://styled-system.com) and [Rebass](https://rebassjs.org/) but it accepts any camelCased CSS property (vendor prefixed props need camelCased with a `_` in front instead of a `-`).
+Ook is like [styled-system](https://styled-system.com) and [Rebass](https://rebassjs.org/) but it accepts any camelCased CSS property (vendor prefixed props need camelCased with a `_` in front instead of a `-`).
 
 ## Installation
 
@@ -13,6 +13,10 @@ import Ook from '@universalstandard/ook'
 
 export default => <Ook background="red">Eek!</Ook>
 ```
+
+## Demo
+
+https://codesandbox.io/s/ook-58nxe
 
 ## Example with Breakpoints and Defaults
 
