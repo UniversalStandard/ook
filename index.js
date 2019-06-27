@@ -27,8 +27,8 @@ const Ook = props => {
     )
   }
 
-  const breakpoints = OokContext ?.Consumer ?._currentValue ?.breakpoints || {}
-  const defaults = OokContext ?.Consumer ?._currentValue ?.defaults || {}
+  const breakpoints = OokContext?.Consumer?._currentValue?.breakpoints || {}
+  const defaults = OokContext?.Consumer?._currentValue?.defaults || {}
 
   const sortedBpNamesBySize = Object.keys(breakpoints).sort(
     (a, b) => parseInt(breakpoints[a]) - parseInt(breakpoints[b]),
