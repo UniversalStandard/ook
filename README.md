@@ -29,26 +29,26 @@ export default () => (
       breakpoints: {
         default: '0',
         tablet: '768px',
-        desktop: '1440px'
+        desktop: '1440px',
       },
       defaults: {
         fontSize: '20px',
         color: {
           default: 'purple',
-          tablet: 'black'
-        }
-      }
+          tablet: 'black',
+        },
+      },
     }}
   >
     <Ook
       background={{
         default: 'red',
         tablet: 'blue',
-        desktop: 'green'
+        desktop: 'green',
       }}
       padding={{
         default: '10px',
-        desktop: '40px'
+        desktop: '40px',
       }}
     >
       <Ook fontWeight="bold">Eek!</Ook>
@@ -71,7 +71,7 @@ Ooks are `<div>`s by default. `<Ook inline>...</Ook>` will return a `<span>`.
 
 Wraps the element in a `<span>` or `<div>` (depending on `inline`) with `style={{ fontSize: base }}`. This is useful when you simply want to scale a component up by sizing everything inside it with `em`s.
 
-### active, hover, focus, visited (object)
+#### active, hover, focus, visited (object)
 
 Allows you to do things like:
 
@@ -87,6 +87,25 @@ Allows you to do things like:
   }}
 >
 ```
+
+#### before, after (object)
+
+Support for pseudo elements:
+
+```js
+<Ook
+  position="relative"
+  after={{
+    content: '',
+    display: 'block',
+    background: 'red',
+    width: '100px',
+    height: '100px'
+  }}
+>
+```
+
+> Note: Pseudo classes and breakpoints within pseudo elements aren't currently supported but will be in the future. 🤷‍♂️
 
 ---
 
