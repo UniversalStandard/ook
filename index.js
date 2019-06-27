@@ -68,12 +68,14 @@ const Ook = props => {
     const kebabCased = prefixed ? `-${kebabCase(key)}` : kebabCase(key)
     const startCased = startCase(key).replace(/\s+/g, '')
 
-    // States
-    if (states.includes(key)) {
+    // Pseudos: States and ::before/::after
+    if (states.includes(key) || key === 'before' || key === 'after') {
       const _key = `:${key}`
 
       Object.entries(val).forEach(([cssProp, _v]) => {
-        const kebabCased = prefixed ? `-${kebabCase(cssProp)}` : kebabCase(cssProp)
+        if (cssProp === 'content' && !_v.trim()) {
+          _v = ' '
+        }
 
         const kebabCased = prefixed
           ? `-${kebabCase(cssProp)}`
