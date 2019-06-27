@@ -6201,9 +6201,9 @@ var Ook = function Ook(props) {
     }
 
     var kebabCased = prefixed ? "-".concat(kebabCase(key)) : kebabCase(key);
-    var startCased = startCase(key).replace(/\s+/g, ''); // States
+    var startCased = startCase(key).replace(/\s+/g, ''); // Pseudos: States and ::before/::after
 
-    if (states.includes(key)) {
+    if (states.includes(key) || key === 'before' || key === 'after') {
       var _key = ":".concat(key);
 
       Object.entries(val).forEach(function (_ref7) {
@@ -6211,12 +6211,15 @@ var Ook = function Ook(props) {
             cssProp = _ref8[0],
             _v = _ref8[1];
 
+        if (cssProp === 'content' && !_v.trim()) {
+          _v = ' ';
+        }
+
         var kebabCased = prefixed ? "-".concat(kebabCase(cssProp)) : kebabCase(cssProp);
 
         if (knownCssProperties.all.includes(kebabCased)) {
           if (_typeof(_v) === 'object') {
             // TODO: A bunch of this is duplicated below. Should probably be combined into a function.
-            // Will likely be tripling it when pseudo elements are added.
             if (_typeof(_v) === 'object') {
               Object.entries(_v).forEach(function (_ref9) {
                 var _ref10 = _slicedToArray(_ref9, 2),
@@ -6226,7 +6229,7 @@ var Ook = function Ook(props) {
                 if (bp === sortedBpNamesBySize[0]) {
                   acc[_key] = _objectSpread({}, acc[_key], _defineProperty({}, cssProp, v));
                 } else {
-                  acc["@media (min-width: ".concat(breakpoints[bp], ")")] = _objectSpread({}, acc["@media (min-width: ".concat(breakpoints[bp], ")")], _defineProperty({}, _key, _objectSpread({}, [_key], _defineProperty({}, cssProp, v))));
+                  acc["@media (min-width: ".concat(breakpoints[bp], ")")] = _objectSpread({}, acc["@media (min-width: ".concat(breakpoints[bp], ")")], _defineProperty({}, _key, _defineProperty({}, cssProp, v)));
                 }
               });
             }
