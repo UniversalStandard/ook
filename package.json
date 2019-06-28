@@ -32,7 +32,8 @@
     "glamor": "^2.20.40",
     "known-css-properties": "^0.14.0",
     "lodash": "^4.17.11",
-    "react": "^16.8.6"
+    "react": "^16.8.6",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

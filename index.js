@@ -4,61 +4,35 @@ import isPropValid from '@emotion/is-prop-valid'
 import { css } from 'glamor'
 const kebabCase = require('lodash/kebabCase')
 const startCase = require('lodash/startCase')
+const uuid = require('uuid/v4')
 
 // Ook! Ook! 🍌
 
 const OokContext = React.createContext()
-OokContext.displayName = 'OokGlobalConfig'
+OokContext.displayName = 'Ook'
+
+export const OokConfig = ({ breakpoints = {}, children }) => (
+  <OokContext.Provider value={{ breakpoints }}>
+    <OokContext.Consumer>
+      {ctx => {
+        return children
+      }}
+    </OokContext.Consumer>
+  </OokContext.Provider>
+)
 
 const states = ['active', 'hover', 'focus', 'visited']
 
 const Ook = props => {
-  const { inline, base, globalConfig, children } = props
-
-  if (globalConfig) {
-    return (
-      <OokContext.Provider value={globalConfig}>
-        <OokContext.Consumer>
-          {ctx => {
-            return children
-          }}
-        </OokContext.Consumer>
-      </OokContext.Provider>
-    )
-  }
+  const { children } = props
 
   const breakpoints = OokContext?.Consumer?._currentValue?.breakpoints || {}
-  const defaults = OokContext?.Consumer?._currentValue?.defaults || {}
 
   const sortedBpNamesBySize = Object.keys(breakpoints).sort(
     (a, b) => parseInt(breakpoints[a]) - parseInt(breakpoints[b]),
   )
 
   const modifiedProps = Object.assign({}, props)
-
-  // Create default rules object to be used as the initial accumulator for cssProps (so we can overwrite it)
-  const defaultRules = Object.entries(defaults).reduce(
-    (acc, [cssProperty, bpVals]) => {
-      if (typeof bpVals === 'object') {
-        Object.entries(bpVals).forEach(([bp, val]) => {
-          if (bp === sortedBpNamesBySize[0]) {
-            acc[cssProperty] = val
-          } else {
-            acc[`@media (min-width: ${breakpoints[bp]})`] = {
-              [cssProperty]: val,
-            }
-          }
-        })
-      }
-
-      if (typeof bpVals === 'string') {
-        acc[cssProperty] = bpVals
-      }
-
-      return acc
-    },
-    {},
-  )
 
   const cssProps = Object.entries(props).reduce((acc, [key, val]) => {
     let prefixed = false
@@ -140,54 +114,49 @@ const Ook = props => {
     }
 
     return acc
-  }, defaultRules)
+  }, {})
 
   const rule = css(cssProps)
 
-  if (base) {
-    const styledDiv = React.createElement(
-      inline ? 'span' : 'div',
-      {
-        style: {
-          fontSize: base,
-          display: inline && 'inline-block',
-        },
-        ...modifiedProps,
-        ...rule,
-      },
-      children,
-    )
-    return <>{styledDiv}</>
-  }
-
-  // El(s)
+  // Single/valid child element.
   if (React.isValidElement(children)) {
-    const styledDiv = React.createElement(
-      inline ? 'span' : 'div',
+    const child = children
+
+    const styledDiv = React.cloneElement(
+      child,
       {
-        style: {
-          fontSize: base,
-          display: inline && 'inline-block',
-        },
         ...modifiedProps,
         ...rule,
       },
-      children,
+      child.props.children,
     )
     return <>{styledDiv}</>
   }
 
-  // No el
+  // No valid child element or multiple elements as children.
   const styledChild = React.createElement(
-    inline ? 'span' : 'div',
+    'div',
     {
-      style: {
-        display: inline && 'inline-block',
-      },
       ...modifiedProps,
       ...rule,
     },
-    children,
+    Array.isArray(children)
+      ? children.map(child => {
+          if (React.isValidElement(child)) {
+            return React.cloneElement(child, {
+              key: child.key || uuid(),
+            })
+          }
+          return React.createElement(
+            'div',
+            {
+              ...modifiedProps,
+              ...rule,
+            },
+            children,
+          )
+        })
+      : children,
   )
   return <>{styledChild}</>
 }

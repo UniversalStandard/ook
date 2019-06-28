@@ -1,6 +1,8 @@
 # @universalstandard/ook
 
-Ook is like [styled-system](https://styled-system.com) and [Rebass](https://rebassjs.org/) but it accepts any camelCased CSS property (vendor prefixed props need camelCased with a `_` in front instead of a `-`).
+Ook is a dumb styling component for React. It's like [Rebass](https://rebassjs.org/), but there's no API to learn and it's much more flexible. It accepts any camelCased CSS property and works very well with breakpoints. It's also been optimized to look really pretty in React Devtools (especially the [experimental branch](https://react-devtools-experimental-chrome.now.sh/)).
+
+Ook takes 10 seconds to master. Give it a shot.
 
 ## Installation
 
@@ -11,78 +13,69 @@ Ook is like [styled-system](https://styled-system.com) and [Rebass](https://reba
 ```js
 import Ook from '@universalstandard/ook'
 
-export default => <Ook background="red">Eek!</Ook>
+export default () => <Ook background="tomato">Eek!</Ook>
 ```
 
 ## Demo
 
 https://codesandbox.io/s/ook-58nxe
 
-## Example with Breakpoints and Defaults
+## Example with Breakpoints
 
 ```js
-import Ook from '@universalstandard/ook'
+import Ook, { OokConfig } from '@universalstandard/ook'
 
-export default () => (
-  <Ook
-    globalConfig={{
-      breakpoints: {
-        default: '0',
-        tablet: '768px',
-        desktop: '1440px',
-      },
-      defaults: {
-        fontSize: '20px',
-        color: {
-          default: 'purple',
-          tablet: 'black',
-        },
-      },
+const Eek = () => (
+  <OokConfig
+    breakpoints={{
+      default: '0',
+      tablet: '768px',
+      desktop: '1440px',
     }}
   >
     <Ook
+      fontFamily="sans-serif"
+      color="white"
       background={{
-        default: 'red',
-        tablet: 'blue',
-        desktop: 'green',
+        default: 'tomato',
+        tablet: 'dodgerblue',
+        desktop: 'hotpink',
       }}
       padding={{
-        default: '10px',
-        desktop: '40px',
+        default: '2rem',
+        desktop: '4rem',
       }}
     >
       <Ook fontWeight="bold">Eek!</Ook>
     </Ook>
-  </Ook>
+  </OokConfig>
 )
+
+export default Eek
 ```
 
 ## Props
 
-#### globalConfig (object)
+#### Any camelCased CSS property
 
-Takes an object with `breakpoints` and `defaults` objects.
+https://developer.mozilla.org/en-US/docs/Web/CSS/Reference#Keyword_index
 
-#### inline (bool)
+Vendor prefixed props need camelCased with a `_` in front instead of a `-`. E.g. `<Ook _webkitFontSmoothing="antialiased">`
 
-Ooks are `<div>`s by default. `<Ook inline>...</Ook>` will return a `<span>`.
-
-#### base (bool)
-
-Wraps the element in a `<span>` or `<div>` (depending on `inline`) with `style={{ fontSize: base }}`. This is useful when you simply want to scale a component up by sizing everything inside it with `em`s.
+> **Possible Performance Concerns:** There is an array of [1000+ CSS property names](https://www.npmjs.com/package/known-css-properties) that are looped over for every `<Ook>` prop. Seems fine right now, but it might not be performant enough for your needs. In the future we plan to expose a config option to select which list of CSS properties you care about (99% of CSS use cases are covered by a [small amount](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference) of properties) and maintain common lists of these properties for your convenience.
 
 #### active, hover, focus, visited (object)
 
-Allows you to do things like:
+Support for [pseudo classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
 
 ```js
 <Ook
-  background="red"
+  background="tomato"
   color="white"
   hover={{
-    background: 'blue',
+    background: 'dodgerblue',
     color: {
-      tablet: 'yellow'
+      tablet: 'springgreen'
     }
   }}
 >
@@ -90,7 +83,7 @@ Allows you to do things like:
 
 #### before, after (object)
 
-Support for pseudo elements:
+Support for [pseudo elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements):
 
 ```js
 <Ook
@@ -98,15 +91,19 @@ Support for pseudo elements:
   after={{
     content: '',
     display: 'block',
-    background: 'red',
+    background: 'tomato',
     width: '100px',
     height: '100px'
   }}
 >
 ```
 
-> Note: Pseudo classes and breakpoints within pseudo elements aren't currently supported but will be in the future. 🤷‍♂️
+> **Note:** Pseudo classes (`hover`, etc.) and breakpoints within _pseudo elements_ aren't currently supported but they will be in the future.
+
+## Tips
+
+- If you ever feel like you're looking at a mountain of `<Ook>`s, you should break your component down into smaller components with only a few `<Ook>`s and friendlier names. It sounds like cliche advice, but it's particularly applicable to Ook.
 
 ---
 
-That's it. That's the API. 🍌
+Have a banana for making it to the end. 🍌

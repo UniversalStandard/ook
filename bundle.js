@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 function _typeof(obj) {
   if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
     _typeof = function (obj) {
@@ -6134,65 +6136,40 @@ var lib_73 = lib.attribsFor;
 
 var kebabCase = require('lodash/kebabCase');
 
-var startCase = require('lodash/startCase'); // Ook! Ook! 🍌
+var startCase = require('lodash/startCase');
+
+var uuid = require('uuid/v4'); // Ook! Ook! 🍌
 
 
 var OokContext = react.createContext();
-OokContext.displayName = 'OokGlobalConfig';
+OokContext.displayName = 'Ook';
+var OokConfig = function OokConfig(_ref) {
+  var _ref$breakpoints = _ref.breakpoints,
+      breakpoints = _ref$breakpoints === void 0 ? {} : _ref$breakpoints,
+      children = _ref.children;
+  return react.createElement(OokContext.Provider, {
+    value: {
+      breakpoints: breakpoints
+    }
+  }, react.createElement(OokContext.Consumer, null, function (ctx) {
+    return children;
+  }));
+};
 var states = ['active', 'hover', 'focus', 'visited'];
 
 var Ook = function Ook(props) {
-  var _OokContext$Consumer, _OokContext$Consumer$, _OokContext$Consumer2, _OokContext$Consumer3;
+  var _OokContext$Consumer, _OokContext$Consumer$;
 
-  var inline = props.inline,
-      base = props.base,
-      globalConfig = props.globalConfig,
-      children = props.children;
-
-  if (globalConfig) {
-    return react.createElement(OokContext.Provider, {
-      value: globalConfig
-    }, react.createElement(OokContext.Consumer, null, function (ctx) {
-      return children;
-    }));
-  }
-
+  var children = props.children;
   var breakpoints = (OokContext === null || OokContext === void 0 ? void 0 : (_OokContext$Consumer = OokContext.Consumer) === null || _OokContext$Consumer === void 0 ? void 0 : (_OokContext$Consumer$ = _OokContext$Consumer._currentValue) === null || _OokContext$Consumer$ === void 0 ? void 0 : _OokContext$Consumer$.breakpoints) || {};
-  var defaults = (OokContext === null || OokContext === void 0 ? void 0 : (_OokContext$Consumer2 = OokContext.Consumer) === null || _OokContext$Consumer2 === void 0 ? void 0 : (_OokContext$Consumer3 = _OokContext$Consumer2._currentValue) === null || _OokContext$Consumer3 === void 0 ? void 0 : _OokContext$Consumer3.defaults) || {};
   var sortedBpNamesBySize = Object.keys(breakpoints).sort(function (a, b) {
     return parseInt(breakpoints[a]) - parseInt(breakpoints[b]);
   });
-  var modifiedProps = Object.assign({}, props); // Create default rules object to be used as the initial accumulator for cssProps (so we can overwrite it)
-
-  var defaultRules = Object.entries(defaults).reduce(function (acc, _ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-        cssProperty = _ref2[0],
-        bpVals = _ref2[1];
-
-    if (_typeof(bpVals) === 'object') {
-      Object.entries(bpVals).forEach(function (_ref3) {
-        var _ref4 = _slicedToArray(_ref3, 2),
-            bp = _ref4[0],
-            val = _ref4[1];
-
-        if (bp === sortedBpNamesBySize[0]) {
-          acc[cssProperty] = val;
-        } else {
-          acc["@media (min-width: ".concat(breakpoints[bp], ")")] = _defineProperty({}, cssProperty, val);
-        }
-      });
-    }
-
-    if (typeof bpVals === 'string') {
-      acc[cssProperty] = bpVals;
-    }
-
-    return acc;
-  }, {});
-  var cssProps = Object.entries(props).reduce(function (acc, _ref5) {
-    var _ref6 = _slicedToArray(_ref5, 2),
-        key = _ref6[0],
-        val = _ref6[1];
+  var modifiedProps = Object.assign({}, props);
+  var cssProps = Object.entries(props).reduce(function (acc, _ref2) {
+    var _ref3 = _slicedToArray(_ref2, 2),
+        key = _ref3[0],
+        val = _ref3[1];
 
     var prefixed = false;
 
@@ -6206,10 +6183,10 @@ var Ook = function Ook(props) {
     if (states.includes(key) || key === 'before' || key === 'after') {
       var _key = ":".concat(key);
 
-      Object.entries(val).forEach(function (_ref7) {
-        var _ref8 = _slicedToArray(_ref7, 2),
-            cssProp = _ref8[0],
-            _v = _ref8[1];
+      Object.entries(val).forEach(function (_ref4) {
+        var _ref5 = _slicedToArray(_ref4, 2),
+            cssProp = _ref5[0],
+            _v = _ref5[1];
 
         if (cssProp === 'content' && !_v.trim()) {
           _v = ' ';
@@ -6221,10 +6198,10 @@ var Ook = function Ook(props) {
           if (_typeof(_v) === 'object') {
             // TODO: A bunch of this is duplicated below. Should probably be combined into a function.
             if (_typeof(_v) === 'object') {
-              Object.entries(_v).forEach(function (_ref9) {
-                var _ref10 = _slicedToArray(_ref9, 2),
-                    bp = _ref10[0],
-                    v = _ref10[1];
+              Object.entries(_v).forEach(function (_ref6) {
+                var _ref7 = _slicedToArray(_ref6, 2),
+                    bp = _ref7[0],
+                    v = _ref7[1];
 
                 if (bp === sortedBpNamesBySize[0]) {
                   acc[_key] = _objectSpread({}, acc[_key], _defineProperty({}, cssProp, v));
@@ -6246,10 +6223,10 @@ var Ook = function Ook(props) {
     if (knownCssProperties.all.includes(kebabCased)) {
       if (_typeof(val) === 'object') {
         // Overwrite global breakpoint rules
-        Object.entries(val).forEach(function (_ref11) {
-          var _ref12 = _slicedToArray(_ref11, 2),
-              bp = _ref12[0],
-              v = _ref12[1];
+        Object.entries(val).forEach(function (_ref8) {
+          var _ref9 = _slicedToArray(_ref8, 2),
+              bp = _ref9[0],
+              v = _ref9[1];
 
           if (bp === sortedBpNamesBySize[0]) {
             acc[prefixed ? startCased : key] = v;
@@ -6270,38 +6247,27 @@ var Ook = function Ook(props) {
     }
 
     return acc;
-  }, defaultRules);
-  var rule = lib_18(cssProps);
-
-  if (base) {
-    var styledDiv = react.createElement(inline ? 'span' : 'div', _objectSpread({
-      style: {
-        fontSize: base,
-        display: inline && 'inline-block'
-      }
-    }, modifiedProps, rule), children);
-    return react.createElement(react.Fragment, null, styledDiv);
-  } // El(s)
-
+  }, {});
+  var rule = lib_18(cssProps); // Single/valid child element.
 
   if (react.isValidElement(children)) {
-    var _styledDiv = react.createElement(inline ? 'span' : 'div', _objectSpread({
-      style: {
-        fontSize: base,
-        display: inline && 'inline-block'
-      }
-    }, modifiedProps, rule), children);
-
-    return react.createElement(react.Fragment, null, _styledDiv);
-  } // No el
+    var child = children;
+    var styledDiv = react.cloneElement(child, _objectSpread({}, modifiedProps, rule), child.props.children);
+    return react.createElement(react.Fragment, null, styledDiv);
+  } // No valid child element or multiple elements as children.
 
 
-  var styledChild = react.createElement(inline ? 'span' : 'div', _objectSpread({
-    style: {
-      display: inline && 'inline-block'
+  var styledChild = react.createElement('div', _objectSpread({}, modifiedProps, rule), Array.isArray(children) ? children.map(function (child) {
+    if (react.isValidElement(child)) {
+      return react.cloneElement(child, {
+        key: child.key || uuid()
+      });
     }
-  }, modifiedProps, rule), children);
+
+    return react.createElement('div', _objectSpread({}, modifiedProps, rule), children);
+  }) : children);
   return react.createElement(react.Fragment, null, styledChild);
 };
 
-module.exports = Ook;
+exports.OokConfig = OokConfig;
+exports.default = Ook;
