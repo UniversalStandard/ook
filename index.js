@@ -1,10 +1,9 @@
+import isPropValid from '@emotion/is-prop-valid'
 import React from 'react'
 import knownCssProperties from 'known-css-properties'
-import isPropValid from '@emotion/is-prop-valid'
-import { css } from 'glamor'
+import styled, { css } from 'styled-components'
+import mqpacker from 'mqpacker'
 const kebabCase = require('lodash/kebabCase')
-const startCase = require('lodash/startCase')
-const uuid = require('uuid/v4')
 
 // Ook! Ook! 🍌
 
@@ -26,85 +25,75 @@ const states = ['active', 'hover', 'focus', 'visited']
 const Ook = props => {
   const { children } = props
 
-  const breakpoints = OokContext?.Consumer?._currentValue?.breakpoints || {}
+  const breakpoints =
+    OokContext.Consumer._currentValue &&
+    OokContext.Consumer._currentValue.breakpoints
+      ? OokContext.Consumer._currentValue.breakpoints
+      : {}
 
   const sortedBpNamesBySize = Object.keys(breakpoints).sort(
-    (a, b) => parseInt(breakpoints[a]) - parseInt(breakpoints[b]),
+    (a, b) => parseInt(breakpoints[a], 10) - parseInt(breakpoints[b], 10),
   )
 
   const modifiedProps = Object.assign({}, props)
 
   const cssProps = Object.entries(props).reduce((acc, [key, val]) => {
+    if (key === 'children') return acc
+
     let prefixed = false
     if (key.match(/^_/)) {
       prefixed = true
     }
-    const kebabCased = prefixed ? `-${kebabCase(key)}` : kebabCase(key)
-    const startCased = startCase(key).replace(/\s+/g, '')
+    const keb = prefixed ? `-${kebabCase(key)}` : kebabCase(key)
 
-    // Pseudos: States and ::before/::after
-    if (states.includes(key) || key === 'before' || key === 'after') {
-      const _key = `:${key}`
-
+    // Pseudo classes
+    if (states.includes(key) || key === 'after' || key === 'before') {
       Object.entries(val).forEach(([cssProp, _v]) => {
         if (cssProp === 'content' && !_v.trim()) {
-          _v = ' '
+          _v = "''"
         }
 
-        const kebabCased = prefixed
-          ? `-${kebabCase(cssProp)}`
-          : kebabCase(cssProp)
+        const _key =
+          key === 'after' || key === 'before' ? `&::${key}` : `&:${key}`
 
-        if (knownCssProperties.all.includes(kebabCased)) {
+        const keb = prefixed ? `-${kebabCase(cssProp)}` : kebabCase(cssProp)
+
+        if (knownCssProperties.all.includes(keb)) {
+          // TODO: A bunch of this is duplicated below. Should probably be combined into a function.
           if (typeof _v === 'object') {
-            // TODO: A bunch of this is duplicated below. Should probably be combined into a function.
-            if (typeof _v === 'object') {
-              Object.entries(_v).forEach(([bp, v]) => {
-                if (bp === sortedBpNamesBySize[0]) {
-                  acc[_key] = {
-                    ...acc[_key],
-                    [cssProp]: v,
-                  }
-                } else {
-                  acc[`@media (min-width: ${breakpoints[bp]})`] = {
-                    ...acc[`@media (min-width: ${breakpoints[bp]})`],
-                    [_key]: {
-                      [cssProp]: v,
-                    },
-                  }
-                }
-              })
-            }
+            Object.entries(_v).forEach(([bp, v]) => {
+              if (bp === sortedBpNamesBySize[0]) {
+                acc += `${_key} { ${keb}: ${v}; }`
+              } else {
+                acc += `@media (min-width: ${
+                  breakpoints[bp]
+                }) { ${_key} { ${keb}: ${v}; } }`
+              }
+            })
           }
 
           if (typeof _v === 'string') {
-            acc[_key] = {
-              ...acc[_key],
-              [cssProp]: _v,
-            }
+            acc += `${_key} { ${keb}: ${_v}; }`
           }
         }
       })
     }
 
     // Generic css and media queries
-    if (knownCssProperties.all.includes(kebabCased)) {
+    if (knownCssProperties.all.includes(keb)) {
       if (typeof val === 'object') {
         // Overwrite global breakpoint rules
         Object.entries(val).forEach(([bp, v]) => {
           if (bp === sortedBpNamesBySize[0]) {
-            acc[prefixed ? startCased : key] = v
+            acc += `${keb}: ${v};`
           } else {
-            acc[`@media (min-width: ${breakpoints[bp]})`] = {
-              ...acc[`@media (min-width: ${breakpoints[bp]})`],
-              [prefixed ? startCased : key]: v,
-            }
+            acc += `@media (min-width: ${breakpoints[bp]}) { ${keb}: ${v}; }`
           }
         })
       }
 
       if (typeof val === 'string') {
-        acc[prefixed ? startCased : key] = val
+        acc += `${keb}: ${val};`
       }
     }
 
@@ -114,19 +103,13 @@ const Ook = props => {
     }
 
     return acc
-  }, {})
+  }, css``)
 
-  const rule = css(cssProps)
+  const S = styled.div`
+    ${mqpacker.pack(cssProps).css}
+  `
 
-  const styledChild = React.createElement(
-    'div',
-    {
-      ...modifiedProps,
-      ...rule,
-    },
-    children,
-  )
-  return <>{styledChild}</>
+  return <S>{children}</S>
 }
 
 export default Ook

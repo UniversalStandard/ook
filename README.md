@@ -1,8 +1,8 @@
 # @universalstandard/ook
 
-Ook is a dumb styling component for React. It's like [Rebass](https://rebassjs.org/), but there's no API to learn and it's much more flexible. It accepts any camelCased CSS property and works very well with breakpoints. It's also been optimized to look really pretty in React Devtools (especially the [experimental branch](https://react-devtools-experimental-chrome.now.sh/)).
+Ook is a dumb styling component for React. It's like [Rebass](https://rebassjs.org/), but the API is any camelCased CSS property and an elegant breakpoint pattern. It also uses styled-components@5 under the hood, so it looks really pretty in React Devtools (especially with the [experimental branch](https://react-devtools-experimental-chrome.now.sh/)).
 
-Ook takes 10 seconds to master. Give it a shot.
+Ook takes about 15 seconds to master.
 
 ## Installation
 

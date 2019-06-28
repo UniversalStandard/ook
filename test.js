@@ -1,3 +1,0 @@
-test('ook', () => {
-  console.log('🙈')
-})
