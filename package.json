@@ -13,8 +13,7 @@
     ],
     "plugins": [
       "babel-plugin-styled-components",
-      "@babel/plugin-proposal-optional-chaining",
-      "babel-plugin-styled-components-postcss"
+      "@babel/plugin-proposal-optional-chaining"
     ]
   },
   "dependencies": {
@@ -22,6 +21,7 @@
     "known-css-properties": "^0.14.0",
     "lodash": "^4.17.11",
     "mqpacker": "^7.0.0",
+    "postcss": "^7.0.17",
     "react": "16.8.0",
     "styled-components": "5.0.0-beta.6"
   },
@@ -31,8 +31,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "babel-plugin-styled-components": "^1.10.4",
-    "babel-plugin-styled-components-postcss": "^1.0.5-alpha.1"
+    "babel-plugin-styled-components": "^1.10.4"
   },
   "license": "MIT"
 }
