@@ -1,6 +1,6 @@
 {
   "name": "@universalstandard/ook",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "main": "dist.js",
   "scripts": {
     "build": "babel index.js -o dist.js --minified",
