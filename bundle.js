@@ -6248,24 +6248,8 @@ var Ook = function Ook(props) {
 
     return acc;
   }, {});
-  var rule = lib_18(cssProps); // Single/valid child element.
-
-  if (react.isValidElement(children)) {
-    var child = children;
-    var styledDiv = react.cloneElement(child, _objectSpread({}, modifiedProps, rule), child.props.children);
-    return react.createElement(react.Fragment, null, styledDiv);
-  } // No valid child element or multiple elements as children.
-
-
-  var styledChild = react.createElement('div', _objectSpread({}, modifiedProps, rule), Array.isArray(children) ? children.map(function (child) {
-    if (react.isValidElement(child)) {
-      return react.cloneElement(child, {
-        key: child.key || uuid()
-      });
-    }
-
-    return react.createElement('div', _objectSpread({}, modifiedProps, rule), children);
-  }) : children);
+  var rule = lib_18(cssProps);
+  var styledChild = react.createElement('div', _objectSpread({}, modifiedProps, rule), children);
   return react.createElement(react.Fragment, null, styledChild);
 };
 

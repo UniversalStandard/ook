@@ -118,45 +118,13 @@ const Ook = props => {
 
   const rule = css(cssProps)
 
-  // Single/valid child element.
-  if (React.isValidElement(children)) {
-    const child = children
-
-    const styledDiv = React.cloneElement(
-      child,
-      {
-        ...modifiedProps,
-        ...rule,
-      },
-      child.props.children,
-    )
-    return <>{styledDiv}</>
-  }
-
-  // No valid child element or multiple elements as children.
   const styledChild = React.createElement(
     'div',
     {
       ...modifiedProps,
       ...rule,
     },
-    Array.isArray(children)
-      ? children.map(child => {
-          if (React.isValidElement(child)) {
-            return React.cloneElement(child, {
-              key: child.key || uuid(),
-            })
-          }
-          return React.createElement(
-            'div',
-            {
-              ...modifiedProps,
-              ...rule,
-            },
-            children,
-          )
-        })
-      : children,
+    children,
   )
   return <>{styledChild}</>
 }
