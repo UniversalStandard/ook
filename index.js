@@ -24,9 +24,7 @@ export const OokConfig = ({ breakpoints = {}, children }) => (
 
 const states = ['active', 'hover', 'focus', 'visited']
 
-const Ook = props => {
-  const { children } = props
-
+const Ook = ({ children, ...props }) => {
   const breakpoints = OokContext['1']
     ? OokContext['1']?.breakpoints
     : OokContext?.Consumer?._currentValue?.breakpoints
@@ -111,7 +109,7 @@ const Ook = props => {
     ${mqpacker.pack(cssProps).css}
   `
 
-  return <S>{children}</S>
+  return <S {...props}>{children}</S>
 }
 
 export default Ook
