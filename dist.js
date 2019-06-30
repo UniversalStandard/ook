@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = exports.OokConfig = void 0;
 
-var _isPropValid = _interopRequireDefault(require("@emotion/is-prop-valid"));
-
 var _react = _interopRequireDefault(require("react"));
 
 var _knownCssProperties = _interopRequireDefault(require("known-css-properties"));
@@ -60,19 +58,20 @@ var Ook = function Ook(_ref2) {
   var _OokContext$, _OokContext$Consumer, _OokContext$Consumer$;
 
   var children = _ref2.children,
-      props = _objectWithoutProperties(_ref2, ["children"]);
+      _ref2$el = _ref2.el,
+      el = _ref2$el === void 0 ? 'div' : _ref2$el,
+      props = _objectWithoutProperties(_ref2, ["children", "el"]);
 
   var breakpoints = OokContext['1'] ? (_OokContext$ = OokContext['1']) === null || _OokContext$ === void 0 ? void 0 : _OokContext$.breakpoints : (OokContext === null || OokContext === void 0 ? void 0 : (_OokContext$Consumer = OokContext.Consumer) === null || _OokContext$Consumer === void 0 ? void 0 : (_OokContext$Consumer$ = _OokContext$Consumer._currentValue) === null || _OokContext$Consumer$ === void 0 ? void 0 : _OokContext$Consumer$.breakpoints) ? OokContext.Consumer._currentValue.breakpoints : {};
   var sortedBpNamesBySize = Object.keys(breakpoints).sort(function (a, b) {
     return parseInt(breakpoints[a], 10) - parseInt(breakpoints[b], 10);
   });
-  var modifiedProps = Object.assign({}, props);
   var cssProps = Object.entries(props).reduce(function (acc, _ref3) {
     var _ref4 = _slicedToArray(_ref3, 2),
         key = _ref4[0],
         val = _ref4[1];
 
-    if (key === 'children') return acc;
+    if (key === 'children' || key === 'as') return acc;
     var prefixed = false;
 
     if (key.match(/^_/)) {
@@ -138,21 +137,14 @@ var Ook = function Ook(_ref2) {
       if (typeof val === 'string') {
         acc += "".concat(keb, ": ").concat(val, ";");
       }
-    } // Some of these props (e.g. backgroundColor) cause React to throw a warning. This removes them from the ook.
-
-
-    if (!(0, _isPropValid["default"])(key)) {
-      delete modifiedProps[key];
     }
 
     return acc;
   }, '');
-
-  var S = _styledComponents["default"].div.withConfig({
+  var S = (0, _styledComponents["default"])(el).withConfig({
     displayName: "ook__S",
     componentId: "sc-1hrrez1-0"
   })(["", ""], _mqpacker["default"].pack(cssProps).css);
-
   return _react["default"].createElement(S, props, children);
 };
 

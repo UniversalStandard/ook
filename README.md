@@ -100,6 +100,37 @@ Support for [pseudo elements](https://developer.mozilla.org/en-US/docs/Web/CSS/P
 
 > **Note:** Pseudo classes (`hover`, etc.) and breakpoints within _pseudo elements_ aren't currently supported but they will be in the future.
 
+#### css (string)
+
+styled-components [`css` prop](https://medium.com/styled-components/announcing-native-support-for-the-css-prop-in-styled-components-245ca5252feb) support as an escape hatch. Handy for things like refactoring. Supports nesting and pseudo-classes/elements.
+
+#### el (string)
+
+Any valid HTML element to render the `<Ook>` as. Defaults to `div`.
+
+#### {...props}
+
+Additional props work as expected.
+
+##### `el` and `css` and additional props Example:
+
+```js
+<Ook
+  el="ul"
+  background="hotpink"
+  css={`
+    > *:hover {
+      background: springgreen;
+    }
+  `}
+  onClick={() => console.log(123)}
+>
+  <li>a</li>
+  <li>b</li>
+  <li>c</li>
+</Ook>
+```
+
 ## Tips
 
 - If you ever feel like you're looking at a mountain of `<Ook>`s, you should break your component down into smaller components with only a few `<Ook>`s and friendlier names. It sounds like cliche advice, but it's particularly applicable to Ook.

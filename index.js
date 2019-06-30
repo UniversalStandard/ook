@@ -1,4 +1,3 @@
-import isPropValid from '@emotion/is-prop-valid'
 import React from 'react'
 import knownCssProperties from 'known-css-properties'
 import styled from 'styled-components'
@@ -24,7 +23,7 @@ export const OokConfig = ({ breakpoints = {}, children }) => (
 
 const states = ['active', 'hover', 'focus', 'visited']
 
-const Ook = ({ children, ...props }) => {
+const Ook = ({ children, el = 'div', ...props }) => {
   const breakpoints = OokContext['1']
     ? OokContext['1']?.breakpoints
     : OokContext?.Consumer?._currentValue?.breakpoints
@@ -35,10 +34,8 @@ const Ook = ({ children, ...props }) => {
     (a, b) => parseInt(breakpoints[a], 10) - parseInt(breakpoints[b], 10),
   )
 
-  const modifiedProps = Object.assign({}, props)
-
   const cssProps = Object.entries(props).reduce((acc, [key, val]) => {
-    if (key === 'children') return acc
+    if (key === 'children' || key === 'as') return acc
 
     let prefixed = false
     if (key.match(/^_/)) {
@@ -97,15 +94,10 @@ const Ook = ({ children, ...props }) => {
       }
     }
 
-    // Some of these props (e.g. backgroundColor) cause React to throw a warning. This removes them from the ook.
-    if (!isPropValid(key)) {
-      delete modifiedProps[key]
-    }
-
     return acc
   }, '')
 
-  const S = styled.div`
+  const S = styled(el)`
     ${mqpacker.pack(cssProps).css}
   `
 

@@ -1,6 +1,6 @@
 {
   "name": "@universalstandard/ook",
-  "version": "4.0.6",
+  "version": "4.1.0",
   "main": "dist.js",
   "scripts": {
     "dev": "run-p watch:*",
@@ -21,7 +21,6 @@
     ]
   },
   "dependencies": {
-    "@emotion/is-prop-valid": "^0.8.2",
     "known-css-properties": "^0.14.0",
     "lodash": "^4.17.11",
     "mqpacker": "^7.0.0",
