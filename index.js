@@ -1,7 +1,7 @@
 import isPropValid from '@emotion/is-prop-valid'
 import React from 'react'
 import knownCssProperties from 'known-css-properties'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import mqpacker from 'mqpacker'
 const kebabCase = require('lodash/kebabCase')
 
@@ -27,11 +27,11 @@ const states = ['active', 'hover', 'focus', 'visited']
 const Ook = props => {
   const { children } = props
 
-  const breakpoints =
-    OokContext.Consumer._currentValue &&
-    OokContext.Consumer._currentValue.breakpoints
-      ? OokContext.Consumer._currentValue.breakpoints
-      : {}
+  const breakpoints = OokContext['1']
+    ? OokContext['1']?.breakpoints
+    : OokContext?.Consumer?._currentValue?.breakpoints
+    ? OokContext.Consumer._currentValue.breakpoints
+    : {}
 
   const sortedBpNamesBySize = Object.keys(breakpoints).sort(
     (a, b) => parseInt(breakpoints[a], 10) - parseInt(breakpoints[b], 10),
@@ -105,7 +105,7 @@ const Ook = props => {
     }
 
     return acc
-  }, css``)
+  }, '')
 
   const S = styled.div`
     ${mqpacker.pack(cssProps).css}

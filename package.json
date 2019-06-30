@@ -1,10 +1,14 @@
 {
   "name": "@universalstandard/ook",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "main": "dist.js",
   "scripts": {
-    "build": "babel index.js -o dist.js --minified",
-    "dev": "babel -w index.js -o dist.js"
+    "dev": "run-p watch:*",
+    "build": "run-s build:*",
+    "build:babel": "babel index.js -o dist.js --minified",
+    "build:yalc": "yalc push",
+    "watch:babel": "babel -w index.js -o dist.js",
+    "watch:yalc": "nodemon -x yalc push"
   },
   "babel": {
     "presets": [
@@ -23,7 +27,7 @@
     "mqpacker": "^7.0.0",
     "postcss": "^7.0.17",
     "react": "16.8.0",
-    "styled-components": "5.0.0-beta.6"
+    "styled-components": "^5.0.0-beta.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
@@ -31,7 +35,9 @@
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "babel-plugin-styled-components": "^1.10.4"
+    "babel-plugin-styled-components": "^1.10.4",
+    "nodemon": "^1.19.1",
+    "npm-run-all": "^4.1.5"
   },
   "license": "MIT"
 }
