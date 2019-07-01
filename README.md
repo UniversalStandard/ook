@@ -131,16 +131,9 @@ Additional props work as expected.
 </Ook>
 ```
 
-#### onClick
-
-The only magical thing Ook tries to do, is if an `<Ook>` gets an `onClick` passed to it, Ook will automatically add `cursor: pointer` to the element as a helper. If you don't like this behavior, you can overwrite it on a per-element basis by simply adding `cursor="default"` to the `<Ook>`.
-
-> In the future, we may remove this or offer a way to toggle it via `<OokConfig>`.
-
 ## Tips
 
 - If you ever feel like you're looking at a mountain of `<Ook>`s, you should break your component down into smaller components with only a few `<Ook>`s and friendlier names. It sounds like cliche advice, but it's particularly applicable to Ook.
-- Router's, like `next/router`, have `<Link>` elements that don't always play nice with `<Ook el="a">` (since `<Link>` generates its own `<a>` on the fly). Instead of `<Link to="/xyz"><a><Ook>Xyz...` and fighting with `a`'s default styles, you can use `<Ook el="a" onClick={() => Router.push('/xyz')}>Xyz</Ook>` or set base styles for `a` to inherit pretty much everything then `<Ook><Link to="xyz"><a>Xyz...`.
 
 ---
 

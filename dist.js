@@ -61,8 +61,7 @@ var Ook = function Ook(_ref2) {
   var children = _ref2.children,
       _ref2$el = _ref2.el,
       el = _ref2$el === void 0 ? 'div' : _ref2$el,
-      cursor = _ref2.cursor,
-      props = _objectWithoutProperties(_ref2, ["children", "el", "cursor"]);
+      props = _objectWithoutProperties(_ref2, ["children", "el"]);
 
   var breakpoints = OokContext['1'] ? (_OokContext$ = OokContext['1']) === null || _OokContext$ === void 0 ? void 0 : _OokContext$.breakpoints : (OokContext === null || OokContext === void 0 ? void 0 : (_OokContext$Consumer = OokContext.Consumer) === null || _OokContext$Consumer === void 0 ? void 0 : (_OokContext$Consumer$ = _OokContext$Consumer._currentValue) === null || _OokContext$Consumer$ === void 0 ? void 0 : _OokContext$Consumer$.breakpoints) ? OokContext.Consumer._currentValue.breakpoints : {};
   var sortedBpNamesBySize = Object.keys(breakpoints).sort(function (a, b) {
@@ -74,12 +73,6 @@ var Ook = function Ook(_ref2) {
         val = _ref4[1];
 
     if (notValidCSSProperties.includes(key)) return acc;
-
-    if (key === 'onClick' && !cursor) {
-      acc += 'cursor: pointer;';
-      return acc;
-    }
-
     var prefixed = false;
 
     if (key.match(/^_/)) {
