@@ -1,6 +1,6 @@
 {
   "name": "@universalstandard/ook",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "main": "dist.js",
   "scripts": {
     "dev": "run-p watch:*",
