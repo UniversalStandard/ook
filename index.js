@@ -24,7 +24,7 @@ export const OokConfig = ({ breakpoints = {}, children }) => (
 const states = ['active', 'hover', 'focus', 'visited']
 const notValidCSSProperties = ['children', 'el', 'src']
 
-const Ook = ({ children, el = 'div', ...props }) => {
+const Ook = ({ children, el = 'div', cursor, ...props }) => {
   const breakpoints = OokContext['1']
     ? OokContext['1']?.breakpoints
     : OokContext?.Consumer?._currentValue?.breakpoints
@@ -37,6 +37,11 @@ const Ook = ({ children, el = 'div', ...props }) => {
 
   const cssProps = Object.entries(props).reduce((acc, [key, val]) => {
     if (notValidCSSProperties.includes(key)) return acc
+
+    if (key === 'onClick' && !cursor) {
+      acc += 'cursor: pointer;'
+      return acc
+    }
 
     let prefixed = false
     if (key.match(/^_/)) {
