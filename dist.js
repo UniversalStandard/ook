@@ -53,6 +53,7 @@ var OokConfig = function OokConfig(_ref) {
 
 exports.OokConfig = OokConfig;
 var states = ['active', 'hover', 'focus', 'visited'];
+var notValidCSSProperties = ['children', 'el', 'src'];
 
 var Ook = function Ook(_ref2) {
   var _OokContext$, _OokContext$Consumer, _OokContext$Consumer$;
@@ -71,7 +72,7 @@ var Ook = function Ook(_ref2) {
         key = _ref4[0],
         val = _ref4[1];
 
-    if (key === 'children' || key === 'as') return acc;
+    if (notValidCSSProperties.includes(key)) return acc;
     var prefixed = false;
 
     if (key.match(/^_/)) {
@@ -141,6 +142,7 @@ var Ook = function Ook(_ref2) {
 
     return acc;
   }, '');
+  console.log(233, cssProps);
   var S = (0, _styledComponents["default"])(el).withConfig({
     displayName: "ook__S",
     componentId: "sc-1hrrez1-0"
