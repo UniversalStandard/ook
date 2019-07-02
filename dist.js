@@ -67,6 +67,7 @@ var Ook = function Ook(_ref2) {
   var sortedBpNamesBySize = Object.keys(breakpoints).sort(function (a, b) {
     return parseInt(breakpoints[a], 10) - parseInt(breakpoints[b], 10);
   });
+  var modifiedProps = props;
   var cssProps = Object.entries(props).reduce(function (acc, _ref3) {
     var _ref4 = _slicedToArray(_ref3, 2),
         key = _ref4[0],
@@ -121,7 +122,8 @@ var Ook = function Ook(_ref2) {
 
     if (_knownCssProperties["default"].all.includes(keb)) {
       if (_typeof(val) === 'object') {
-        // Overwrite global breakpoint rules
+        modifiedProps[key] = JSON.stringify(val); // Overwrite global breakpoint rules
+
         Object.entries(val).forEach(function (_ref9) {
           var _ref10 = _slicedToArray(_ref9, 2),
               bp = _ref10[0],
@@ -146,7 +148,7 @@ var Ook = function Ook(_ref2) {
     displayName: "ook__S",
     componentId: "sc-1hrrez1-0"
   })(["", ""], _mqpacker["default"].pack(cssProps).css);
-  return _react["default"].createElement(S, props, children);
+  return _react["default"].createElement(S, modifiedProps, children);
 };
 
 var _default = Ook;

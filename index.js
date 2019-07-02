@@ -35,6 +35,8 @@ const Ook = ({ children, el = 'div', ...props }) => {
     (a, b) => parseInt(breakpoints[a], 10) - parseInt(breakpoints[b], 10),
   )
 
+  const modifiedProps = props
+
   const cssProps = Object.entries(props).reduce((acc, [key, val]) => {
     if (notValidCSSProperties.includes(key)) return acc
 
@@ -80,6 +82,8 @@ const Ook = ({ children, el = 'div', ...props }) => {
     // Generic css and media queries
     if (knownCssProperties.all.includes(keb)) {
       if (typeof val === 'object') {
+        modifiedProps[key] = JSON.stringify(val)
+
         // Overwrite global breakpoint rules
         Object.entries(val).forEach(([bp, v]) => {
           if (bp === sortedBpNamesBySize[0]) {
@@ -102,7 +106,7 @@ const Ook = ({ children, el = 'div', ...props }) => {
     ${mqpacker.pack(cssProps).css}
   `
 
-  return <S {...props}>{children}</S>
+  return <S {...modifiedProps}>{children}</S>
 }
 
 export default Ook
