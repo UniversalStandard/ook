@@ -56,13 +56,15 @@ export default Eek
 
 ## Props
 
-#### Any camelCased CSS property
+#### By Default, Any camelCased CSS property
 
 https://developer.mozilla.org/en-US/docs/Web/CSS/Reference#Keyword_index
 
 Vendor prefixed props need camelCased with a `_` in front instead of a `-`. E.g. `<Ook _webkitFontSmoothing="antialiased">`
 
-> **Possible Performance Concerns:** There is an array of [1000+ CSS property names](https://www.npmjs.com/package/known-css-properties) that are looped over for every `<Ook>` prop. Seems fine right now, but it might not be performant enough for your needs. In the future we plan to expose a config option to select which list of CSS properties you care about (99% of CSS use cases are covered by a [small amount](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference) of properties) and maintain common lists of these properties for your convenience.
+#### cssProperties
+
+There is an array of [1000+ CSS property names](https://www.npmjs.com/package/known-css-properties) _(most of which are never used in the real world)_ that are looped over for every `<Ook>` prop **by default**. It seems to perform fine, but it might not be fast enough for your needs. Feel free to pass your own array of kebab-cased CSS properties to `<OokConfig cssProperties={yourArrayOfCssProps}>...`. We're starting/updating/maintaining one at [@universalstandard/common-css-properties](https://github.com/UniversalStandard/common-css-properties) if you'd like to contribute any CSS properties you use.
 
 #### active, hover, focus, visited (object)
 
@@ -83,7 +85,7 @@ Support for [pseudo classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Ps
 
 #### before, after (object)
 
-Support for [pseudo elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements):
+Limited support for [pseudo elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements):
 
 ```js
 <Ook
@@ -102,11 +104,11 @@ Support for [pseudo elements](https://developer.mozilla.org/en-US/docs/Web/CSS/P
 
 #### css (string)
 
-styled-components [`css` prop](https://medium.com/styled-components/announcing-native-support-for-the-css-prop-in-styled-components-245ca5252feb) support as an escape hatch. Handy for things like refactoring. Supports nesting and pseudo-classes/elements.
+styled-components [`css` prop](https://medium.com/styled-components/announcing-native-support-for-the-css-prop-in-styled-components-245ca5252feb) support as an escape hatch. Possibly handy for things like the lobotomized owl technique. Supports nesting and pseudo-classes/elements.
 
 #### el (string)
 
-Any valid HTML element to render the `<Ook>` as. Defaults to `div`.
+Any valid HTML element, or React component, to render the `<Ook>` as. Defaults to `div`.
 
 #### {...props}
 

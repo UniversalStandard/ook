@@ -11,8 +11,12 @@ const postcss = require('postcss')
 const OokContext = React.createContext()
 OokContext.displayName = 'Ook'
 
-export const OokConfig = ({ breakpoints = {}, children }) => (
-  <OokContext.Provider value={{ breakpoints }}>
+export const OokConfig = ({
+  breakpoints = {},
+  cssProperties = knownCssProperties.all,
+  children,
+}) => (
+  <OokContext.Provider value={{ breakpoints, cssProperties }}>
     <OokContext.Consumer>
       {ctx => {
         return children
@@ -31,13 +35,19 @@ const Ook = ({ children, el = 'div', ...props }) => {
     ? OokContext.Consumer._currentValue.breakpoints
     : {}
 
+  const cssProperties = OokContext['1']
+    ? OokContext['1']?.cssProperties
+    : OokContext?.Consumer?._currentValue?.cssProperties
+    ? OokContext.Consumer._currentValue.cssProperties
+    : []
+
   const sortedBpNamesBySize = Object.keys(breakpoints).sort(
     (a, b) => parseInt(breakpoints[a], 10) - parseInt(breakpoints[b], 10),
   )
 
-  const modifiedProps = props
+  const jsonifiedProps = props
 
-  const cssProps = Object.entries(props).reduce((acc, [key, val]) => {
+  const styledString = Object.entries(props).reduce((acc, [key, val]) => {
     if (notValidCSSProperties.includes(key)) return acc
 
     let prefixed = false
@@ -58,7 +68,7 @@ const Ook = ({ children, el = 'div', ...props }) => {
 
         const keb = prefixed ? `-${kebabCase(cssProp)}` : kebabCase(cssProp)
 
-        if (knownCssProperties.all.includes(keb)) {
+        if (cssProperties.includes(keb)) {
           // TODO: A bunch of this is duplicated below. Should probably be combined into a function.
           if (typeof _v === 'object') {
             Object.entries(_v).forEach(([bp, v]) => {
@@ -80,9 +90,9 @@ const Ook = ({ children, el = 'div', ...props }) => {
     }
 
     // Generic css and media queries
-    if (knownCssProperties.all.includes(keb)) {
+    if (cssProperties.includes(keb)) {
       if (typeof val === 'object') {
-        modifiedProps[key] = JSON.stringify(val)
+        jsonifiedProps[key] = JSON.stringify(val)
 
         // Overwrite global breakpoint rules
         Object.entries(val).forEach(([bp, v]) => {
@@ -103,10 +113,10 @@ const Ook = ({ children, el = 'div', ...props }) => {
   }, '')
 
   const S = styled(el)`
-    ${mqpacker.pack(cssProps).css}
+    ${mqpacker.pack(styledString).css}
   `
 
-  return <S {...modifiedProps}>{children}</S>
+  return <S {...jsonifiedProps}>{children}</S>
 }
 
 export default Ook
