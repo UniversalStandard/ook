@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "known-css-properties": "^0.14.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "mqpacker": "^7.0.0",
     "postcss": "^7.0.17",
     "react": "16.8.0",
