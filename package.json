@@ -24,7 +24,7 @@
     "known-css-properties": "^0.14.0",
     "lodash": "^4.17.11",
     "mqpacker": "^7.0.0",
-    "postcss": "^7.0.17",
+    "postcss": "^7.0.36",
     "react": "16.8.0",
     "styled-components": "^5.0.0-beta.6"
   },
